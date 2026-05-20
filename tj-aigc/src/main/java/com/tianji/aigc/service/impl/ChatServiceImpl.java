@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatClient chatClient;
+    private final ChatClient openAiChatClient;
     private final SystemPromptConfig systemPromptConfig;
     // 存储大模型的生成状态，这里采用ConcurrentHashMap是确保线程安全
     // 目前的版本暂时用Map实现，如果考虑分布式环境的话，可以考虑用redis来实现
@@ -140,5 +141,14 @@ public class ChatServiceImpl implements ChatService {
         GENERATE_STATUS.remove(sessionId);
     }
 
+
+    @Override
+    public String chatText(String question) {
+        return this.openAiChatClient.prompt()
+                .system(promptSystem -> promptSystem.text(this.systemPromptConfig.getTextSystemMessage().get()))
+                .user(question)
+                .call()
+                .content();
+    }
 
 }

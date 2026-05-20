@@ -9,6 +9,31 @@ spring:
     name: aigc-service
   main:
     allow-circular-references: true # 允许循环引用
+  ai:
+    openai:
+      base-url: https://api.chatanywhere.tech
+      api-key: ${tj.ai.openai.key}
+      chat:
+        options:
+          model: gpt-3.5-turbo
+        enabled: true
+      audio:
+        speech:
+          base-url: https://api.chatanywhere.tech/
+          api-key: ${tj.ai.openai.key}
+          options:
+            model: tts-1 #可用的 TTS 模型之一:tts-1 或 tts-1-hd
+            voice: alloy #生成音频时使用的语音。支持的语音有:alloy、echo、fable、onyx、nova 和 shimmer。
+            response-format: mp3 #默认为 mp3 音频的格式。支持的格式有:mp3、opus、aac 和 flac。
+            speed: 1.0 #默认为 1 生成的音频速度。选择0.25到4.0之间的值。1.0是默认值。
+        transcription:
+          base-url: https://api.chatanywhere.tech/
+          api-key: ${tj.ai.openai.key}
+          options:
+            model: whisper-1  #要使用的模型 ID。目前只有 whisper-1 是可用的。
+            response-format: text #转录输出的格式,可选择:json、text、srt、verbose_json 或 vtt。
+            temperature: 0 #默认为 0，采样温度,between 0 和 1。更高的值像 0.8 会使输出更随机,而更低的值像 0.2 会使其更集中和确定性。如果设置为 0,模型将使用对数概率自动增加温度直到达到特定阈值。
+            language: zh #输入音频的语言。以 ISO-639-1 格式提供输入语言可以提高准确性和延迟。
 tj:
   swagger:
     enable: true
@@ -42,7 +67,10 @@ tj:
           data-id: consult-agent-system-message.txt
         knowledge-agent:
           data-id: knowledge-agent-system-message.txt
+        text:
+          data-id: text-system-chat-message.txt
       memory:
         max: 100 #存储最大的聊天记录数
     chat-type: ROUTE # ROUTE / ENHANCE / APP
-
+    openai:
+      key: ${OPENAI_API_KEY}
